@@ -1,0 +1,13 @@
+{% extends "base.html"%}
+{% block content %}
+<form action="/poll" method="post">
+    <p><label for="id_resp1">Respuesta 1:<br /></label> <textarea id="id_resp1" name="resp1" rows="4" cols="60"></textarea></p>
+    <p><label for="id_resp2">Respuesta 2:<br /></label> <textarea id="id_resp2" name="resp2" rows="4" cols="60"></textarea></p>
+    <p><label for="id_resp3">Respuesta 3:<br /></label> <textarea id="id_resp3" name="resp3" rows="4" cols="60"></textarea></p>
+    <p><label for="id_info">Do you like receive information of results obtained with the model?</label> <input id="id_info" name="info" type="checkbox" /></p>
+    <div class="submit_button">
+        <input type="submit" value="Submit" />
+    </div>
+</form>
+<img src="{{ STATIC_URL }}img/{{ figure }}" id="figure" alt="Work done during the months of the project by the author" />
+{% endblock%}

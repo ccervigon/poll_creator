@@ -1,0 +1,49 @@
+body
+{
+width:768px;
+margin: 0 auto;
+}
+
+#title
+{
+color:blue;
+text-align:center;
+}
+
+#error
+{
+width:550px;
+margin: 0 auto;
+text-align:center;
+color:red;
+}
+
+#content
+{
+width:500px;
+margin: 0 auto;
+}
+
+#form_login
+{
+width:210px;
+margin: 0 auto;
+}
+
+.submit_button
+{
+width:50px;
+margin: 0 auto;
+}
+
+#figure
+{
+width:500px;
+}
+
+#thanks
+{
+width:175px;
+margin: 0 auto;
+font-size:30px;
+}
