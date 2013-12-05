@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# -*- coding: utf-8 -*- 
 
 import MySQLdb
 import sqlite3
@@ -34,7 +34,7 @@ else:
 
 print 'Running script'
 
-#CREACION DEL DIRECTORIO DONDE SE ALMACENARA LA ENCUESTA y COPIA DE LA WEB
+#Creating directory where we will store and copy the poll and web
 poll_project += 'poll_' + args.dbname + '/'
 
 if os.path.isdir(poll_project):
@@ -51,13 +51,13 @@ call(['mkdir', poll_project])
 call(['cp', '-r', 'poll', poll_project])
 print 'Done'
 
+#Analysis of project and obtaining graphs of authors
 print 'Analyzing project and making DB...'
-#ANALISIS DEL PROYECTO Y OBTENCION DE LAS GRAFICAS DE LOS AUTORES
 fig_dir = poll_project + 'poll/static/img/'
 call(['python', 'analysis_project_authors.py', args.dbname, args.dbhostname,
       args.dbuser, args.dbpass, fig_dir])
 
-#COPIA DE LOS AUTORES A LA BD DE LA ENCUESTA
+#Copy of authors to poll's DB
 con = MySQLdb.connect(host=args.dbhostname, user=args.dbuser, \
                       passwd=args.dbpass, db=args.dbname)
 con.set_character_set('utf8')
@@ -73,11 +73,11 @@ people = cursor.fetchall()
 
 cursor2.executemany('INSERT INTO pollApp_author VALUES(?,?,?)', people)
 
-#Guardamos cambios en la BD
+#Saving changes into DB
 con2.commit()
 print 'Done'
 
-#Desconexion de BBDD
+#Disconnect of BBDD
 cursor.close()
 con.close()
 cursor2.close()

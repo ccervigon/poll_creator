@@ -29,8 +29,8 @@ def welcome(request):
                 request.session['_param'] = 'email'
                 return HttpResponseRedirect('/poll')
             except:
-                text_error = 'Por favor comprueba el nombre e email pues no \
-                            nos apareces en la lista de autores.'
+                text_error = 'Please you check your name and email because \
+                            you don\'t appear in the author list'
 
     response = render_to_response('login.html', 
                                   {'form': form, 'error': text_error},
