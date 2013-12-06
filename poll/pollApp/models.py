@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 class Author(models.Model):
     name = models.CharField(max_length=40, blank=True)
     email = models.CharField(max_length=40, blank=True)
+    email_hash = models.TextField(blank=True)
     
 class Poll_author(models.Model):
     author = models.ForeignKey(Author)
@@ -19,6 +20,7 @@ class Poll_author(models.Model):
 class AuthorForm(ModelForm):
     class Meta:
         model = Author
+        exclude = ['email_hash']
 
 class PollForm(ModelForm):
     class Meta:

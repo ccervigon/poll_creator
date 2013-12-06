@@ -7,6 +7,7 @@ import argparse
 from subprocess import call
 import sys
 import os
+import hashlib
 
 # Parse command line options
 parser = argparse.ArgumentParser(description="""Scripts to make a poll of specific project""")
@@ -71,7 +72,11 @@ query = ('SELECT * FROM people')
 cursor.execute(query)
 people = cursor.fetchall()
 
-cursor2.executemany('INSERT INTO pollApp_author VALUES(?,?,?)', people)
+for author in people:
+    sha = hashlib.sha1()
+    sha.update(author[2])
+    query = ('INSERT INTO pollApp_author VALUES(?,?,?,?)')
+    cursor2.execute(query, (str(author[0]), author[1], author[2], sha.hexdigest()))
 
 #Saving changes into DB
 con2.commit()

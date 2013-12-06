@@ -9,11 +9,19 @@ from django.template import RequestContext
 text_error = ''
 
 @csrf_exempt
-def welcome(request):
+def welcome(request, email_hash=None):
     request.session.set_expiry(0)
     if request.method == 'GET':
-        form = AuthorForm()
-        text_error = ''
+        if email_hash == None:
+            form = AuthorForm()
+            text_error = ''
+        else:
+            try:
+                Author.objects.get(email_hash=email_hash)
+                request.session['_email_hash'] = email_hash
+                return HttpResponseRedirect('/poll')
+            except:
+                return HttpResponseRedirect('/')
     elif request.method == 'POST':
         form = AuthorForm(request.POST)
         try:
@@ -40,15 +48,19 @@ def welcome(request):
 @csrf_exempt
 def poll(request):
     if request.method == 'GET':
-        form = AuthorForm(request.session.get('_old_post'))
-        aut_form = form.save(commit=False)
-        param = request.session.get('_param')
-        if param == 'name':
-            author = Author.objects.get(name=aut_form.name)
-        elif param == 'email':
-            author = Author.objects.get(email=aut_form.email)
+        email_hash = request.session.get('_email_hash', None)
+        if email_hash != None:
+            author = Author.objects.get(email_hash=email_hash)
         else:
-            return HttpResponseRedirect('/')
+            form = AuthorForm(request.session.get('_old_post'))
+            aut_form = form.save(commit=False)
+            param = request.session.get('_param')
+            if param == 'name':
+                author = Author.objects.get(name=aut_form.name)
+            elif param == 'email':
+                author = Author.objects.get(email=aut_form.email)
+            else:
+                return HttpResponseRedirect('/')
         
         request.session['_author'] = author.id
         form_poll = PollForm()
