@@ -26,6 +26,11 @@ parser.add_argument("-dbname",
 parser.add_argument("-poll_dir",
                     help="Poll directory",
                     default = '~/')
+parser.add_argument("-delete",
+                    help="Delete automatically the directory if exist",
+                    action='store_true',
+                    default = False)
+
 
 args = parser.parse_args()
 if args.poll_dir[-1] != '/':
@@ -40,10 +45,12 @@ poll_project += 'poll_' + args.dbname + '/'
 
 if os.path.isdir(poll_project):
     print 'The directory "' + poll_project + '" exists.'
-    print 'Do you want delete it? [yes/no] (Default: NO):'
-    if raw_input().lower() != 'yes':
-        print 'Script Aborted'
-        sys.exit(1)
+    if not args.delete:
+        print 'IMPORTANT!!! Remember create a backup of the DB before continue if you want conserve the results.'
+        print 'Do you want delete it? [yes/no] (Default: NO):'
+        if raw_input().lower() != 'yes':
+            print 'Script Aborted'
+            sys.exit(1)
     call(['rm', '-r', poll_project])
     print 'Directory deleted'
 
