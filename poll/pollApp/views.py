@@ -14,6 +14,10 @@ def welcome(request, email_hash=None):
     if request.method == 'GET':
         if email_hash == None:
             form = AuthorForm()
+            try:
+                del request.session['_email_hash']
+            except:
+                pass
             text_error = ''
         else:
             try:
@@ -61,7 +65,7 @@ def poll(request):
                 author = Author.objects.get(email=aut_form.email)
             else:
                 return HttpResponseRedirect('/')
-        
+
         request.session['_author'] = author.id
         form_poll = PollForm()
         figure = 'author_' + str(author.id) + '.png'
@@ -83,5 +87,6 @@ def poll(request):
     return HttpResponseRedirect('/')
 
 def thanks(request):
+    request.session.flush()
     return render_to_response('thanks.html',
                               context_instance=RequestContext(request))
