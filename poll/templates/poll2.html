@@ -1,22 +1,12 @@
 {% extends "base.html"%}
 {% block content %}
-{% if poll == 1 %}
-<form action="/poll" method="post">
-{% else %}
 <form action="/poll2" method="post">
-{% endif %}
-    <p><label for="id_resp1">Answer 1:<br /></label> <textarea id="id_resp1" name="resp1" rows="4" cols="60"></textarea></p>
-    <p><label for="id_resp2">Answer 2:<br /></label> <textarea id="id_resp2" name="resp2" rows="4" cols="60"></textarea></p>
-    <p><label for="id_resp3">Answer 3:<br /></label> <textarea id="id_resp3" name="resp3" rows="4" cols="60"></textarea></p>
-    {% if flag_info %}
+    <p><label for="id_resp4">Answer 4:<br /></label> <textarea id="id_resp4" name="resp4" rows="4" cols="60"></textarea></p>
     <p><label for="id_resp5">Answer 5:<br /></label> <textarea id="id_resp5" name="resp5" rows="4" cols="60"></textarea></p>
     <p><label for="id_info">Do you like receive information of results obtained with the model?</label> <input id="id_info" name="info" type="checkbox" /></p>
-    {% endif %}
     <div class="submit_button">
         <input type="submit" value="Submit" />
     </div>
 </form>
-{% if flag_fig %}
 <img src="{{ STATIC_URL }}img/{{ figure }}" id="figure" alt="Work done during the months of the project by the author" />
-{% endif %}
 {% endblock%}

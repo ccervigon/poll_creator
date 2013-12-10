@@ -15,14 +15,27 @@ class Poll_author(models.Model):
     resp1 = models.TextField(blank=True)
     resp2 = models.TextField(blank=True)
     resp3 = models.TextField(blank=True)
+    resp4 = models.TextField(blank=True)
+    resp5 = models.TextField(blank=True)
     info = models.BooleanField()
+    type_poll = models.IntegerField()
 
 class AuthorForm(ModelForm):
     class Meta:
         model = Author
         exclude = ['email_hash']
 
-class PollForm(ModelForm):
+class Poll1Form(ModelForm):
     class Meta:
         model = Poll_author
-        exclude = ['author']
+        exclude = ['author', 'resp4', 'type_poll']
+
+class Poll2Form(ModelForm):
+    class Meta:
+        model = Poll_author
+        exclude = ['author', 'resp4', 'resp5', 'info', 'type_poll']
+
+class Poll2bForm(ModelForm):
+    class Meta:
+        model = Poll_author
+        fields = ['resp4', 'resp5', 'info']
