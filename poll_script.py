@@ -25,7 +25,7 @@ parser.add_argument("-dbname",
                     required = True)
 parser.add_argument("-poll_dir",
                     help="Poll directory",
-                    default = '~/')
+                    default = '/tmp')
 parser.add_argument("-delete",
                     help="Delete automatically the directory if exist",
                     action='store_true',
