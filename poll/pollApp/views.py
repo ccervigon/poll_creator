@@ -31,13 +31,13 @@ def welcome(request, email_hash=None):
         form = AuthorForm(request.POST)
         try:
             aut_form = form.save(commit=False)
-            Author.objects.get(name=aut_form.name)
+            Author.objects.get(name__iexact=aut_form.name)
             request.session['_old_post'] = request.POST
             request.session['_param'] = 'name'
             return HttpResponseRedirect('/poll')
         except:
             try:
-                Author.objects.get(email=aut_form.email)
+                Author.objects.get(email__iexact=aut_form.email)
                 request.session['_old_post'] = request.POST
                 request.session['_param'] = 'email'
                 return HttpResponseRedirect('/poll')
@@ -61,9 +61,9 @@ def poll(request):
             aut_form = form.save(commit=False)
             param = request.session.get('_param')
             if param == 'name':
-                author = Author.objects.get(name=aut_form.name)
+                author = Author.objects.get(name__iexact=aut_form.name)
             elif param == 'email':
-                author = Author.objects.get(email=aut_form.email)
+                author = Author.objects.get(email__iexact=aut_form.email)
             else:
                 return HttpResponseRedirect('/')
 
