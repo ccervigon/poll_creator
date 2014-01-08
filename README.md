@@ -9,9 +9,9 @@ Its purpose is to obtain accurate information from the developers of the time sp
 Method of use
 -------------
 
-### Dependecies
+### Dependencies
 
-* MySQL database with information obtained of the project. You must use the CVSAnalY tools to obtain the information (https://github.com/MetricsGrimoire/CVSAnalY).
+* MySQL database with information obtained of the project. You must use the VizGrimoireR tools to obtain the information (https://github.com/VizGrimoire/VizGrimoireR).
 
 * Python 2.7
 
