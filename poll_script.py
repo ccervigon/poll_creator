@@ -80,10 +80,13 @@ cursor.execute(query)
 people = cursor.fetchall()
 
 for author in people:
+    query = ('SELECT upeople_id FROM people_upeople WHERE people_id=%s')
+    cursor.execute(query, author[0])
+    upeople_id = cursor.fetchall()[0][0]
     sha = hashlib.sha1()
     sha.update(author[2])
-    query = ('INSERT INTO pollApp_author VALUES(?,?,?,?)')
-    cursor2.execute(query, (str(author[0]), author[1], author[2], sha.hexdigest()))
+    query = ('INSERT INTO pollApp_author VALUES(?,?,?,?,?)')
+    cursor2.execute(query, (str(author[0]), author[1], author[2], sha.hexdigest(), str(upeople_id)))
 
 #Saving changes into DB
 con2.commit()

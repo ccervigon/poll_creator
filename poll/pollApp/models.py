@@ -9,9 +9,11 @@ class Author(models.Model):
     name = models.CharField(max_length=40, blank=True)
     email = models.CharField(max_length=40, blank=True)
     email_hash = models.TextField(blank=True)
+    upeople_id = models.IntegerField()
     
 class Poll_author(models.Model):
     author = models.ForeignKey(Author)
+    upeople_id = models.IntegerField()
     resp1 = models.TextField(blank=True)
     resp2 = models.TextField(blank=True)
     resp3 = models.TextField(blank=True)
@@ -23,17 +25,17 @@ class Poll_author(models.Model):
 class AuthorForm(ModelForm):
     class Meta:
         model = Author
-        exclude = ['email_hash']
+        exclude = ['email_hash', 'upeople_id']
 
 class Poll1Form(ModelForm):
     class Meta:
         model = Poll_author
-        exclude = ['author', 'resp4', 'type_poll']
+        exclude = ['author', 'upeople_id', 'resp4', 'type_poll']
 
 class Poll2Form(ModelForm):
     class Meta:
         model = Poll_author
-        exclude = ['author', 'resp4', 'resp5', 'info', 'type_poll']
+        exclude = ['author', 'upeople_id', 'resp4', 'resp5', 'info', 'type_poll']
 
 class Poll2bForm(ModelForm):
     class Meta:

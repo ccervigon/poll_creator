@@ -73,7 +73,7 @@ def poll(request):
             type_poll = 1
             flag_fig = True
             flag_info = True
-            figure = 'author_' + str(author.id) + '.png'
+            figure = 'author_' + str(author.upeople_id) + '.png'
         else:
             type_poll = 2
             flag_fig = False
@@ -91,7 +91,9 @@ def poll(request):
         form = Poll1Form(request.POST)
         poll_form = form.save(commit=False)
         author_id = request.session.get('_author')
-        poll = Poll_author(author=Author.objects.get(id=author_id),
+        author=Author.objects.get(id=author_id)
+        poll = Poll_author(author=author,
+                           upeople_id=author.upeople_id,
                            resp1=poll_form.resp1,
                            resp2=poll_form.resp2,
                            resp3=poll_form.resp3,
@@ -111,21 +113,24 @@ def poll2(request):
         form = Poll2bForm(request.POST)
         second_post = form.save(commit=False)
         author_id = request.session.get('_author')
-        poll = Poll_author(author=Author.objects.get(id=author_id),
-                   resp1=first_post.resp1,
-                   resp2=first_post.resp2,
-                   resp3=first_post.resp3,
-                   resp4=second_post.resp4,
-                   resp5=second_post.resp5,
-                   info=second_post.info,
-                   type_poll=2)
+        author=Author.objects.get(id=author_id)
+        poll = Poll_author(author=author,
+                           upeople_id=author.upeople_id,
+                           resp1=first_post.resp1,
+                           resp2=first_post.resp2,
+                           resp3=first_post.resp3,
+                           resp4=second_post.resp4,
+                           resp5=second_post.resp5,
+                           info=second_post.info,
+                           type_poll=2)
         poll.save()
         return HttpResponseRedirect('/thanks')
     except:
         request.session['_first_post'] = request.POST
         request.session['_sec_post'] = True
         author_id = request.session.get('_author')
-        figure = 'author_' + str(author_id) + '.png'
+        author = Author.objects.get(id=author_id)
+        figure = 'author_' + str(author.upeople_id) + '.png'
         response = render_to_response('poll2.html',
                                       {'figure': figure},
                                       context_instance=RequestContext(request))

@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*- 
 
 import MySQLdb
-from datetime import *
+import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.ticker as plticker
+import matplotlib.dates as mdates
 import sys
 import os
+from dateutil.relativedelta import relativedelta
 
 def calendar_commit_month_author(year, month, author):
     M = np.zeros(31, dtype=np.int)
@@ -33,57 +34,89 @@ if len(cursor.fetchall()) != 0:
 else:
     date = 'date'
 
-cursor.execute('SELECT COUNT(*) FROM people')
-tot_authors = int(cursor.fetchall()[0][0])
-
-cursor.execute('SELECT MIN(' + date + ') FROM scmlog')
+cursor.execute('SELECT MIN(date) FROM scmlog')
 date_min = cursor.fetchall()[0][0]
 date_min = date_min.year
-cursor.execute('SELECT MAX(' + date + ') FROM scmlog')
+cursor.execute('SELECT MAX(date) FROM scmlog')
 date_max = cursor.fetchall()[0][0]
 date_max = date_max.year
 
 period = range(date_min,date_max)
 period.append(date_max)
 
-authors = []
-for i in range(1,tot_authors+1):
-    query = ('SELECT committer_id, author_id, ' + date + ' FROM scmlog '
-              'WHERE author_id = %s ORDER BY ' + date)
-    cursor.execute(query, i)
-    authors.append(cursor.fetchall())
+query = ('SELECT id from upeople')
+cursor.execute(query)
+upeople = cursor.fetchall()
+
+authors_commits = []
+authors_ids = []
+for aut in upeople:
+    query = ('SELECT people_id FROM people_upeople WHERE upeople_id=%s')
+    cursor.execute(query, aut[0])
+    people_ids = cursor.fetchall()
+    if people_ids:
+        list_commits = ()
+        for pid in people_ids:
+            query = ('SELECT committer_id, author_id, ' + date + ' FROM scmlog '
+                     'WHERE author_id = %s')
+            cursor.execute(query, pid[0])
+            list_commits += cursor.fetchall()
+        authors_commits.append(tuple(sorted(list_commits, key=lambda item: item[2])))
+        ids = (aut,) + people_ids
+        authors_ids.append(ids)
+
+tot_authors = len(authors_commits)
 
 work_authors_month = []
-for author in authors:
+
+for author in authors_commits:
     M_month = []
     for year in period:
         for month in range(1, 13):
             aut = calendar_commit_month_author(year, month, author)
             work_days = 0
-            for i in range(0, len(aut)):
+            for i in range(len(aut)):
                 if aut[i] != 0:
                     work_days += 1
-            M_month.append(work_days)
+            M_month.append(work_days)   #CONTAMOS EN ESTE CASO LOS DIAS TRABAJADOS AL MES Y NO LOS COMMITS AL MES
+            
     work_authors_month.append(M_month)
 
-for aut in range(0, tot_authors):
-    query = ('SELECT name FROM people WHERE id=' + str(aut+1))
+startdate = datetime.date(date_min, 1, 1)
+enddate = datetime.date(date_max, 12, 1)
+delta = relativedelta(months=+1)
+list_date = []
+d = startdate
+while d <= enddate:
+    list_date.append(d)
+    d += delta
+months = mdates.MonthLocator(range(1,13), bymonthday=1, interval=2)
+monthsFmt = mdates.DateFormatter("%b '%y")
+width_bar = [(np.array(list_date)[j+1]-np.array(list_date)[j]).days \
+             for j in range(len(np.array(list_date))-1)] + [30]
+
+for aut in range(tot_authors):
+    query = ('SELECT identifier FROM upeople WHERE id=' + str(authors_ids[aut][0][0]))
     cursor.execute(query)
     name_author = cursor.fetchall()[0][0]
     
     ax = plt.subplot(111)
-    ax.bar(np.arange(len(work_authors_month[aut])), work_authors_month[aut])
+    ax.bar(np.array(list_date), work_authors_month[aut],
+           width=width_bar, align="center")
+    ax.xaxis.set_major_locator(months)
+    ax.xaxis.set_major_formatter(monthsFmt)
+    ax.xaxis.set_minor_locator(mdates.MonthLocator())
+    for label in ax.xaxis.get_majorticklabels():
+        label.set_fontsize(8)  
+    plt.xticks(rotation=90)
     plt.axhline(10, color = 'g')
     plt.axhline(12, color = 'b')
     plt.axhline(15, color = 'r')
-    ax.set_xlim(left=0, right=len(work_authors_month[aut]))
+    ax.set_xlim(left=startdate, right=enddate)
     ax.set_ylim(bottom=0, top=30)
-    loc = plticker.MultipleLocator(base=2.0)
-    ax.xaxis.set_major_locator(loc)
-    plt.xlabel('Month')
     plt.ylabel('Days')
     plt.title(unicode('Temporal figure of work done by author ' + name_author, 'iso-8859-1'))
-    plt.savefig('author_' + str(aut+1) + '.png', dpi = 200)
+    plt.savefig('author_' + str(authors_ids[aut][0][0]) + '.png', dpi = 200)
     plt.close()
 
 cursor.close()
