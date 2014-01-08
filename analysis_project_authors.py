@@ -4,6 +4,9 @@
 import MySQLdb
 import datetime
 import numpy as np
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import sys
