@@ -93,7 +93,8 @@ d = startdate
 while d <= enddate:
     list_date.append(d)
     d += delta
-months = mdates.MonthLocator(range(1,13), bymonthday=1, interval=2)
+interval = 1 + (len(list_date) / 45)
+months = mdates.MonthLocator(range(1,13), bymonthday=1, interval=interval)
 monthsFmt = mdates.DateFormatter("%b '%y")
 width_bar = [(np.array(list_date)[j+1]-np.array(list_date)[j]).days \
              for j in range(len(np.array(list_date))-1)] + [30]
