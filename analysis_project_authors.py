@@ -20,6 +20,103 @@ def calendar_commit_month_author(year, month, author):
             M[int(aux[2].day-1)] += 1
     return M
 
+def smooth(x, window_len=10, window='hanning'):
+    """smooth the data using a window with requested size.
+    
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal 
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+    
+    input:
+        x: the input signal 
+        window_len: the dimension of the smoothing window
+        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+            flat window will produce a moving average smoothing.
+
+    output:
+        the smoothed signal
+        
+    example:
+
+    import numpy as np
+    t = np.linspace(-2,2,0.1)
+    x = np.sin(t)+np.random.randn(len(t))*0.1
+    y = smooth(x)
+    
+    see also: 
+    
+    numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve
+    scipy.signal.lfilter
+ 
+    TODO: the window parameter could be the window itself if an array instead of a string   
+    """
+
+    if x.ndim != 1:
+        raise ValueError, "smooth only accepts 1 dimension arrays."
+
+    if x.size < window_len:
+        #raise ValueError, "Input vector needs to be bigger than window size."
+        return x
+
+    if window_len < 3:
+        return x
+
+    if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
+        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+
+    s=np.r_[2*x[0]-x[window_len:1:-1], x, 2*x[-1]-x[-1:-window_len:-1]]
+    #print(len(s))
+    
+    if window == 'flat': #moving average
+        w = np.ones(window_len,'d')
+    else:
+        w = getattr(np, window)(window_len)
+    y = np.convolve(w/w.sum(), s, mode='same')
+    return y[window_len-1:-window_len+1]
+
+def fix_smooth(f_original, len_window, window):
+    f_smooth = np.array([], dtype=np.int)
+    flag = False
+    position = 0
+    for i in range(0, len(f_original)):
+        if f_original[i] != 0:
+            if i+1 == len(f_original):
+                if flag:
+                    if len(f_original[position:]) == 7:
+                        smooth_aux = smooth(np.array(f_original[position-1:]), len_window, window)
+                        smooth_aux = smooth_aux[1:]
+                    else:
+                        smooth_aux = smooth(np.array(f_original[position:]), len_window, window)
+                    f_smooth = np.append(f_smooth, smooth_aux)
+                else:
+                    f_smooth = np.append(f_smooth, f_original[i])
+            elif not flag:
+                position = i
+                flag = True
+        elif f_original[i] == 0 and flag:
+            if i+1 == len(f_original):
+                if len(f_original[position:i]) == 7:
+                    smooth_aux = smooth(np.array(f_original[position-1:i]), len_window, window)
+                    smooth_aux = smooth_aux[1:]
+                else:
+                    smooth_aux = smooth(np.array(f_original[position:i]), len_window, window)
+                f_smooth = np.append(f_smooth, smooth_aux)
+                f_smooth = np.append(f_smooth, 0)
+                flag = False
+            elif f_original[i+1] == 0:
+                if len(f_original[position:i]) == 7:
+                    smooth_aux = smooth(np.array(f_original[position-1:i]), len_window, window)
+                    smooth_aux = smooth_aux[1:]
+                else:
+                    smooth_aux = smooth(np.array(f_original[position:i]), len_window, window)
+                f_smooth = np.append(f_smooth, smooth_aux)
+                f_smooth = np.append(f_smooth, 0)
+                flag = False
+        else:
+            f_smooth = np.append(f_smooth, 0)
+    return f_smooth
+
 project = sys.argv[1]
 os.chdir(sys.argv[5])
 
@@ -81,9 +178,16 @@ for author in authors_commits:
             for i in range(len(aut)):
                 if aut[i] != 0:
                     work_days += 1
-            M_month.append(work_days)   #CONTAMOS EN ESTE CASO LOS DIAS TRABAJADOS AL MES Y NO LOS COMMITS AL MES
+            M_month.append(work_days)
             
     work_authors_month.append(M_month)
+    
+    windows=['hanning']
+    len_windows = [7]
+    
+    smooth_work_days_authors = []
+    for aut in work_authors_month:
+        smooth_work_days_authors.append(fix_smooth(aut, len_windows[0], windows[0]))
 
 startdate = datetime.date(date_min, 1, 1)
 enddate = datetime.date(date_max, 12, 1)
@@ -105,7 +209,7 @@ for aut in range(tot_authors):
     name_author = cursor.fetchall()[0][0]
     
     ax = plt.subplot(111)
-    ax.bar(np.array(list_date), work_authors_month[aut],
+    ax.bar(np.array(list_date), smooth_work_days_authors[aut],
            width=width_bar, align="center")
     ax.xaxis.set_major_locator(months)
     ax.xaxis.set_major_formatter(monthsFmt)
@@ -113,12 +217,13 @@ for aut in range(tot_authors):
     for label in ax.xaxis.get_majorticklabels():
         label.set_fontsize(8)  
     plt.xticks(rotation=90)
-    plt.axhline(10, color = 'g')
-    plt.axhline(12, color = 'b')
-    plt.axhline(15, color = 'r')
+    plt.axhline(9, color='g', linewidth=2)
     ax.set_xlim(left=startdate, right=enddate)
     ax.set_ylim(bottom=0, top=30)
-    plt.ylabel('Days')
+    textstr = 'Above Green Line (> 9): Full Time Developer'
+    props = dict(boxstyle = 'round', facecolor = 'g', alpha = 0.3)
+    ax.text(0.97, 0.96, textstr, transform = ax.transAxes, fontsize = 10, verticalalignment = 'top', horizontalalignment = 'right', bbox = props)
+    plt.ylabel('Days worked')
     plt.title(unicode('Temporal figure of work done by author ' + name_author, 'iso-8859-1'))
     plt.savefig('author_' + str(authors_ids[aut][0][0]) + '.png', dpi = 200)
     plt.close()
