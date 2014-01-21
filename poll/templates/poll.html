@@ -5,12 +5,53 @@
 {% else %}
 <form action="/poll2" method="post">
 {% endif %}
-    <p><label for="id_resp1">Answer 1:<br /></label> <textarea id="id_resp1" name="resp1" rows="4" cols="60"></textarea></p>
-    <p><label for="id_resp2">Answer 2:<br /></label> <textarea id="id_resp2" name="resp2" rows="4" cols="60"></textarea></p>
-    <p><label for="id_resp3">Answer 3:<br /></label> <textarea id="id_resp3" name="resp3" rows="4" cols="60"></textarea></p>
+    <p>
+        <label for="id_resp1">How many hours a week do you spend more or less in the project?<br /></label>
+        <select id="id_resp1" name="resp1">
+            <option selected value="None">Choose one option</option>
+            <option value=">40">More than 40</option>
+            <option value="40">Around 40</option>
+            <option value="30">Around 30</option>
+            <option value="20">Around 20</option>
+            <option value="10">Around 10</option>
+            <option value="7">Around 7</option>
+            <option value="<7">Less than 7</option>
+        </select>
+    </p>
+    <p>
+        <label for="id_resp2">Of the hours you spend at project, how long is coding?<br /></label>
+        <select id="id_resp2" name="resp2">
+            <option selected value="None">Choose one option</option>
+            <option value="100">100%</option>
+            <option value="90">Around 90%</option>
+            <option value="80">Around 80%</option>
+            <option value="70">Around 70%</option>
+            <option value="60">Around 60%</option>
+            <option value="50">Around 50%</option>
+            <option value="40">Around 40%</option>
+            <option value="30">Around 30%</option>
+            <option value="20">Around 20%</option>
+            <option value="10">Around 10%</option>
+            <option value="<10">Less than 10%</option>
+        </select>
+    </p>
+    <p>
+        <label for="id_resp3">The day that you program, Do you make at least one commit?<br /></label>
+        <select id="id_resp3" name="resp3">
+            <option selected value="None">Choose one option</option>
+            <option value="True">True</option>
+            <option value="False">False</option>
+        </select>
+    </p>
     {% if flag_info %}
-    <p><label for="id_resp5">Answer 5:<br /></label> <textarea id="id_resp5" name="resp5" rows="4" cols="60"></textarea></p>
-    <p><label for="id_info">Do you like receive information of results obtained with the model?</label> <input id="id_info" name="info" type="checkbox" /></p>
+    <p>
+        <label for="id_resp5">Have you always worked the same number of the hours in the project? or have you had different stages of work? If you have had different stages, could you tell us the different stages by observing the graph?<br /></label>
+        <textarea id="id_resp5" name="resp5" rows="4" cols="60"></textarea>
+    </p>
+    <p>
+        <label for="id_info">Do you like receive information of results obtained with the model?</label>
+        <input id="id_info" name="info" type="checkbox" />
+    </p>
     {% endif %}
     <div class="submit_button">
         <input type="submit" value="Submit" />
