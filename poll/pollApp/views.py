@@ -21,12 +21,10 @@ def welcome(request, email_hash=None):
                 pass
             text_error = ''
         else:
-            try:
-                Author.objects.get(email_hash=email_hash)
-                request.session['_email_hash'] = email_hash
-                return HttpResponseRedirect('/poll')
-            except:
+            if not Author.objects.filter(email_hash=email_hash).exists():
                 return HttpResponseRedirect('/')
+            request.session['_email_hash'] = email_hash
+            return HttpResponseRedirect('/poll')
     elif request.method == 'POST':
         form = AuthorForm(request.POST)
         try:
@@ -36,14 +34,12 @@ def welcome(request, email_hash=None):
             request.session['_param'] = 'name'
             return HttpResponseRedirect('/poll')
         except:
-            try:
-                Author.objects.get(email__iexact=aut_form.email)
+            if Author.objects.filter(email__iexact=aut_form.email).exists():
                 request.session['_old_post'] = request.POST
                 request.session['_param'] = 'email'
                 return HttpResponseRedirect('/poll')
-            except:
-                text_error = 'Please you check your name and email because \
-                            you don\'t appear in the author list'
+            text_error = 'Please you check your name and email because \
+                        you don\'t appear in the author list'
 
     response = render_to_response('login.html', 
                                   {'form': form, 'error': text_error},
@@ -55,7 +51,7 @@ def poll(request):
     if request.method == 'GET':
         email_hash = request.session.get('_email_hash', None)
         if email_hash != None:
-            author = Author.objects.get(email_hash=email_hash)
+            author = Author.objects.filter(email_hash=email_hash)[0]
         else:
             form = AuthorForm(request.session.get('_old_post'))
             aut_form = form.save(commit=False)
@@ -63,7 +59,7 @@ def poll(request):
             if param == 'name':
                 author = Author.objects.get(name__iexact=aut_form.name)
             elif param == 'email':
-                author = Author.objects.get(email__iexact=aut_form.email)
+                author = Author.objects.filter(email__iexact=aut_form.email)[0]
             else:
                 return HttpResponseRedirect('/')
 
