@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 import sqlite3
 
 # Parse command line options
-parser = argparse.ArgumentParser(description="""Scripts to make a poll of specific project""")
+parser = argparse.ArgumentParser(description="""Scripts to make a survey of specific project""")
 parser.add_argument("-email",
                     help="Email",
                     required = True)
@@ -20,20 +20,20 @@ parser.add_argument("-smtp",
 parser.add_argument("-smtp_port",
                     help="SMTP port",
                     required = True)
-parser.add_argument("-poll_dir",
-                    help="Poll directory",
+parser.add_argument("-survey_dir",
+                    help="Survey directory",
                     required = True)
 parser.add_argument("-project",
                     help="Project name",
                     required = True)
 parser.add_argument("-url",
-                    help="URL where the poll is hosted",
+                    help="URL where the survey is hosted",
                     required = True)
 
 args = parser.parse_args()
 
 print 'Project: ' + args.project
-con = sqlite3.connect(args.poll_dir + '/poll/db.sqlite3')
+con = sqlite3.connect(args.survey_dir + '/survey/db.sqlite3')
 con.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor = con.cursor()
 
@@ -46,7 +46,7 @@ mailServer.login(args.email,args.email_pw)
 
 email_content = 'Example to %s with hash %s/%s' #CHANGE CONTENT
 
-query = ('SELECT name,email,email_hash FROM pollApp_author')
+query = ('SELECT name,email,email_hash FROM surveyApp_author')
 for developer in cursor.execute(query):
     print 'Sending email to ' + developer[1] + '...',
     #Message

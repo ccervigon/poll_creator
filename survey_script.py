@@ -10,7 +10,7 @@ import os
 import hashlib
 
 # Parse command line options
-parser = argparse.ArgumentParser(description="""Scripts to make a poll of specific project""")
+parser = argparse.ArgumentParser(description="""Scripts to make a survey of specific project""")
 parser.add_argument("-dbhostname",
                     help = "MySQL hostname",
                     default = 'localhost')
@@ -23,8 +23,8 @@ parser.add_argument("-dbpass",
 parser.add_argument("-dbname",
                     help = "Name of the database with project cvsanaly information",
                     required = True)
-parser.add_argument("-poll_dir",
-                    help="Poll directory",
+parser.add_argument("-survey_dir",
+                    help="Survey directory",
                     default = '/tmp')
 parser.add_argument("-delete",
                     help="Delete automatically the directory if exist",
@@ -33,45 +33,45 @@ parser.add_argument("-delete",
 
 
 args = parser.parse_args()
-if args.poll_dir[-1] != '/':
-    poll_project = args.poll_dir + '/'
+if args.survey_dir[-1] != '/':
+    survey_project = args.survey_dir + '/'
 else:
-    poll_project = args.poll_dir
+    survey_project = args.survey_dir
 
 print 'Running script'
 
-#Creating directory where we will store and copy the poll and web
-poll_project += 'poll_' + args.dbname + '/'
+#Creating directory where we will store and copy the survey and web
+survey_project += 'survey_' + args.dbname + '/'
 
-if os.path.isdir(poll_project):
-    print 'The directory "' + poll_project + '" exists.'
+if os.path.isdir(survey_project):
+    print 'The directory "' + survey_project + '" exists.'
     if not args.delete:
         print 'IMPORTANT!!! Remember create a backup of the DB before continue if you want conserve the results.'
         print 'Do you want delete it? [yes/no] (Default: NO):'
         if raw_input().lower() != 'yes':
             print 'Script Aborted'
             sys.exit(1)
-    call(['rm', '-r', poll_project])
+    call(['rm', '-r', survey_project])
     print 'Directory deleted'
 
 print 'Copying files...',
-call(['mkdir', poll_project])
-call(['cp', '-r', 'poll', poll_project])
+call(['mkdir', survey_project])
+call(['cp', '-r', 'survey', survey_project])
 print 'Done'
 
 #Analysis of project and obtaining graphs of authors
 print 'Analyzing project and making DB...'
-fig_dir = poll_project + 'poll/static/img/'
+fig_dir = survey_project + 'survey/static/img/'
 call(['python', 'analysis_project_authors.py', args.dbname, args.dbhostname,
       args.dbuser, args.dbpass, fig_dir])
 
-#Copy of authors to poll's DB
+#Copy of authors to survey's DB
 con = MySQLdb.connect(host=args.dbhostname, user=args.dbuser, \
                       passwd=args.dbpass, db=args.dbname)
 con.set_character_set('utf8')
 cursor = con.cursor()
 
-con2 = sqlite3.connect(poll_project + '/poll/db.sqlite3')
+con2 = sqlite3.connect(survey_project + '/survey/db.sqlite3')
 con2.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor2 = con2.cursor()
 
@@ -85,7 +85,7 @@ for author in people:
     upeople_id = cursor.fetchall()[0][0]
     sha = hashlib.sha1()
     sha.update(author[2])
-    query = ('INSERT INTO pollApp_author VALUES(?,?,?,?,?)')
+    query = ('INSERT INTO surveyApp_author VALUES(?,?,?,?,?)')
     cursor2.execute(query, (str(author[0]), author[1], author[2], sha.hexdigest(), str(upeople_id)))
 
 #Saving changes into DB

@@ -11,7 +11,7 @@ class Author(models.Model):
     email_hash = models.TextField(blank=True)
     upeople_id = models.IntegerField()
     
-class Poll_author(models.Model):
+class Survey_author(models.Model):
     author = models.ForeignKey(Author)
     upeople_id = models.IntegerField()
     resp1 = models.TextField(blank=True)
@@ -20,24 +20,24 @@ class Poll_author(models.Model):
     resp4 = models.TextField(blank=True)
     resp5 = models.TextField(blank=True)
     info = models.BooleanField()
-    type_poll = models.IntegerField()
+    type_survey = models.IntegerField()
 
 class AuthorForm(ModelForm):
     class Meta:
         model = Author
         exclude = ['email_hash', 'upeople_id']
 
-class Poll1Form(ModelForm):
+class Survey1Form(ModelForm):
     class Meta:
-        model = Poll_author
-        exclude = ['author', 'upeople_id', 'resp4', 'type_poll']
+        model = Survey_author
+        exclude = ['author', 'upeople_id', 'resp4', 'type_survey']
 
-class Poll2Form(ModelForm):
+class Survey2Form(ModelForm):
     class Meta:
-        model = Poll_author
-        exclude = ['author', 'upeople_id', 'resp4', 'resp5', 'info', 'type_poll']
+        model = Survey_author
+        exclude = ['author', 'upeople_id', 'resp4', 'resp5', 'info', 'type_survey']
 
-class Poll2bForm(ModelForm):
+class Survey2bForm(ModelForm):
     class Meta:
-        model = Poll_author
+        model = Survey_author
         fields = ['resp4', 'resp5', 'info']

@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pollApp',
+    'surveyApp',
 )
 
 TEMPLATE_DIRS = (
@@ -54,9 +54,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'poll.urls'
+ROOT_URLCONF = 'survey.urls'
 
-WSGI_APPLICATION = 'poll.wsgi.application'
+WSGI_APPLICATION = 'survey.wsgi.application'
 
 
 # Database

@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
-encoding//poll/poll/urls.py=utf-8
-encoding//poll/pollApp/models.py=utf-8
-encoding//poll/pollApp/views.py=utf-8
+encoding//survey/survey/urls.py=utf-8
+encoding//survey/surveyApp/models.py=utf-8
+encoding//survey/surveyApp/views.py=utf-8
 encoding/analysis_project_authors.py=utf-8
-encoding/poll_script.py=utf-8
 encoding/sending_mail_to_developers.py=utf-8
+encoding/survey_script.py=utf-8

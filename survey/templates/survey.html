@@ -1,9 +1,9 @@
 {% extends "base.html"%}
 {% block content %}
-{% if poll == 1 %}
-<form action="/poll" method="post">
+{% if survey == 1 %}
+<form action="/survey" method="post">
 {% else %}
-<form action="/poll2" method="post">
+<form action="/survey2" method="post">
 {% endif %}
     <p>
         <label for="id_resp1">How many hours a week do you spend more or less in the project?<br /></label>

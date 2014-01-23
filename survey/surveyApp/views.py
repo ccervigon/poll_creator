@@ -24,7 +24,7 @@ def welcome(request, email_hash=None):
             if not Author.objects.filter(email_hash=email_hash).exists():
                 return HttpResponseRedirect('/')
             request.session['_email_hash'] = email_hash
-            return HttpResponseRedirect('/poll')
+            return HttpResponseRedirect('/survey')
     elif request.method == 'POST':
         form = AuthorForm(request.POST)
         try:
@@ -32,12 +32,12 @@ def welcome(request, email_hash=None):
             Author.objects.get(name__iexact=aut_form.name)
             request.session['_old_post'] = request.POST
             request.session['_param'] = 'name'
-            return HttpResponseRedirect('/poll')
+            return HttpResponseRedirect('/survey')
         except:
             if Author.objects.filter(email__iexact=aut_form.email).exists():
                 request.session['_old_post'] = request.POST
                 request.session['_param'] = 'email'
-                return HttpResponseRedirect('/poll')
+                return HttpResponseRedirect('/survey')
             text_error = 'Please you check your name and email because \
                         you don\'t appear in the author list'
 
@@ -47,7 +47,7 @@ def welcome(request, email_hash=None):
     return response
 
 @csrf_exempt
-def poll(request):
+def survey(request):
     if request.method == 'GET':
         email_hash = request.session.get('_email_hash', None)
         if email_hash != None:
@@ -66,51 +66,51 @@ def poll(request):
         request.session['_author'] = author.id
         rand = random.randint(0,1)
         if rand == 0:
-            type_poll = 1
+            type_survey = 1
             flag_fig = True
             flag_info = True
             figure = 'author_' + str(author.upeople_id) + '.png'
         else:
-            type_poll = 2
+            type_survey = 2
             flag_fig = False
             flag_info = False
             figure = ''
         
-        response = render_to_response('poll.html',
-                                      {'poll': type_poll,
+        response = render_to_response('survey.html',
+                                      {'survey': type_survey,
                                        'flag_fig': flag_fig,
                                        'flag_info': flag_info,
                                        'figure': figure},
                                        context_instance=RequestContext(request))
         return response
     elif request.method == 'POST':
-        form = Poll1Form(request.POST)
-        poll_form = form.save(commit=False)
+        form = Survey1Form(request.POST)
+        survey_form = form.save(commit=False)
         author_id = request.session.get('_author')
         author=Author.objects.get(id=author_id)
-        poll = Poll_author(author=author,
+        survey = Survey_author(author=author,
                            upeople_id=author.upeople_id,
-                           resp1=poll_form.resp1,
-                           resp2=poll_form.resp2,
-                           resp3=poll_form.resp3,
-                           resp5=poll_form.resp5,
-                           info=poll_form.info,
-                           type_poll=1)
-        poll.save()
+                           resp1=survey_form.resp1,
+                           resp2=survey_form.resp2,
+                           resp3=survey_form.resp3,
+                           resp5=survey_form.resp5,
+                           info=survey_form.info,
+                           type_survey=1)
+        survey.save()
         return HttpResponseRedirect('/thanks')
     return HttpResponseRedirect('/')
 
 @csrf_exempt
-def poll2(request):
+def survey2(request):
     try:
         del request.session['_sec_post']
-        form = Poll2Form(request.session.get('_first_post'))
+        form = Survey2Form(request.session.get('_first_post'))
         first_post = form.save(commit=False)
-        form = Poll2bForm(request.POST)
+        form = Survey2bForm(request.POST)
         second_post = form.save(commit=False)
         author_id = request.session.get('_author')
         author=Author.objects.get(id=author_id)
-        poll = Poll_author(author=author,
+        survey = Survey_author(author=author,
                            upeople_id=author.upeople_id,
                            resp1=first_post.resp1,
                            resp2=first_post.resp2,
@@ -118,8 +118,8 @@ def poll2(request):
                            resp4=second_post.resp4,
                            resp5=second_post.resp5,
                            info=second_post.info,
-                           type_poll=2)
-        poll.save()
+                           type_survey=2)
+        survey.save()
         return HttpResponseRedirect('/thanks')
     except:
         request.session['_first_post'] = request.POST
@@ -127,7 +127,7 @@ def poll2(request):
         author_id = request.session.get('_author')
         author = Author.objects.get(id=author_id)
         figure = 'author_' + str(author.upeople_id) + '.png'
-        response = render_to_response('poll2.html',
+        response = render_to_response('survey2.html',
                                       {'figure': figure},
                                       context_instance=RequestContext(request))
         return response
