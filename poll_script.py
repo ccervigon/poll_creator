@@ -75,7 +75,7 @@ con2 = sqlite3.connect(poll_project + '/poll/db.sqlite3')
 con2.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor2 = con2.cursor()
 
-query = ('SELECT * FROM people')
+query = ('SELECT * FROM people WHERE id = ANY (SELECT DISTINCT author_id from scmlog)')
 cursor.execute(query)
 people = cursor.fetchall()
 
