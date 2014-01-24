@@ -44,13 +44,15 @@ mailServer.starttls()
 mailServer.ehlo()
 mailServer.login(args.email,args.email_pw)
 
-email_content = 'Example to %s with hash %s/%s' #CHANGE CONTENT
+#INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH
+email_content = 'Email to %s in the project %s with hash %s/%s' #CHANGE CONTENT
 
 query = ('SELECT name,email,email_hash FROM surveyApp_author')
 for developer in cursor.execute(query):
     print 'Sending email to ' + developer[1] + '...',
     #Message
-    msg = MIMEText(email_content % (developer[0], args.url, developer[2]))
+    #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH
+    msg = MIMEText(email_content % (developer[0], args.project, args.url, developer[2]))
     msg['Subject'] = 'Subject'
     msg['From'] = args.email
     msg['To'] = developer[1]
