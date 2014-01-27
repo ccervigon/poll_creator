@@ -34,7 +34,8 @@ def welcome(request, email_hash=None):
             request.session['_param'] = 'name'
             return HttpResponseRedirect('/survey')
         except:
-            if Author.objects.filter(email__iexact=aut_form.email).exists():
+            if Author.objects.filter(email__iexact=aut_form.email).exists() and \
+            Author.objects.filter(email__iexact=aut_form.email)[0].email != '':
                 request.session['_old_post'] = request.POST
                 request.session['_param'] = 'email'
                 return HttpResponseRedirect('/survey')
