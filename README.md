@@ -19,7 +19,7 @@ Method of use
 
 ### Usage:
 
-$ python survey_script.py -dbuser ccervigon -dbpass 1234 -dbname XXX -survey_dir /tmp
+python survey_script.py [-h] [-dbhostname DBHOSTNAME] -dbuser DBUSER -dbpass DBPASS -dbname DBNAME [-survey_dir SURVEY_DIR] [-delete] [-update_survey]
 
 This will generate a copy of the Django project in the folder specified by the parameter -survey_dir, also get a list of project developers which it is copied to sqlite database of the survey and it generates a graph with the temporal distribution of work produced per month for each developer.
 
