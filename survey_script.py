@@ -30,6 +30,10 @@ parser.add_argument("-delete",
                     help="Delete automatically the directory if exist",
                     action='store_true',
                     default = False)
+parser.add_argument("-update_survey",
+                    help="Only update survey App",
+                    action='store_true',
+                    default = False)
 
 
 args = parser.parse_args()
@@ -43,29 +47,32 @@ print 'Running script'
 #Creating directory where we will store and copy the survey and web
 survey_project += 'survey_' + args.dbname + '/'
 
-if os.path.isdir(survey_project):
-    print 'The directory "' + survey_project + '" exists.'
-    if not args.delete:
-        print 'IMPORTANT!!! Remember create a backup of the DB before continue if you want conserve the results.'
-        print 'Do you want delete it? [yes/no] (Default: NO):'
-        if raw_input().lower() != 'yes':
-            print 'Script Aborted'
-            sys.exit(1)
-    call(['rm', '-r', survey_project])
-    print 'Directory deleted'
-
-print 'Copying files...',
-call(['mkdir', survey_project])
+if not args.update_survey:
+    if os.path.isdir(survey_project):
+        print 'The directory "' + survey_project + '" exists.'
+        if not args.delete:
+            print 'IMPORTANT!!! Remember create a backup of the DB before continue if you want conserve the results.'
+            print 'Do you want delete it? [yes/no] (Default: NO):'
+            if raw_input().lower() != 'yes':
+                print 'Script Aborted'
+                sys.exit(1)
+        call(['rm', '-r', survey_project])
+        print 'Directory deleted'
+    
+    print 'Copying files...',
+    call(['mkdir', survey_project])
 call(['cp', '-r', 'survey', survey_project])
 print 'Done'
 
-#Analysis of project and obtaining graphs of authors
-print 'Analyzing project and making DB...'
-fig_dir = survey_project + 'survey/static/img/'
-call(['python', 'analysis_project_authors.py', args.dbname, args.dbhostname,
-      args.dbuser, args.dbpass, fig_dir])
+if not args.update_survey:
+    #Analysis of project and obtaining graphs of authors
+    print 'Analyzing project and making images...'
+    fig_dir = survey_project + 'survey/static/img/'
+    call(['python', 'analysis_project_authors.py', args.dbname, args.dbhostname,
+          args.dbuser, args.dbpass, fig_dir])
 
 #Copy of authors to survey's DB
+print 'Updating DB...'
 con = MySQLdb.connect(host=args.dbhostname, user=args.dbuser, \
                       passwd=args.dbpass, db=args.dbname)
 con.set_character_set('utf8')
