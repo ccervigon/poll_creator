@@ -2,10 +2,9 @@
 {% block content %}
 <div id="form_login">
 <form action="/" method="post">
-    {{ form.as_p }}
-    <div class="submit_button">
-        <input type="submit" value="Submit" />
-    </div>
+    <p align="center"><label for="id_name">Name:</label> <input id="id_name" maxlength="40" name="name" type="text" /></p>
+    <p align="center"><label for="id_email">Email:</label> <input id="id_email" maxlength="40" name="email" type="text" /></p>
+    <input type="submit" value="Submit" class="submit_button" />
 </form>
 </div>
 {% endblock%}

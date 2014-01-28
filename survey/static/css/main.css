@@ -1,49 +1,70 @@
-body
-{
-width:768px;
-margin: 0 auto;
-}
+@charset "utf-8";
 
-#title
-{
-color:blue;
-text-align:center;
+body {
+	width: 620px;
+	margin: 0 auto;
 }
-
+#banner {
+	height: 140px;
+}
+#banner #logo {
+	height: 90px;
+	position: relative;
+	top: 19%;
+}
+#banner h2 {
+	color: #1411EF;
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+	text-align: center;
+	width: 530px;
+	margin-left: 90px;
+	top: 10%;
+	position: relative;
+}
+body hr {
+	display: block;
+	height: 1px;
+	border-top: 5px solid #04AE45;
+	margin: 1em 0;
+	padding: 0;
+	border-bottom: 0px;
+	border-right: 0px;
+	border-left: 0px;
+}
 #error
 {
-width:550px;
-margin: 0 auto;
-text-align:center;
-color:red;
+    margin: 0 auto;
+    text-align:center;
+    color:red;
 }
-
 #content
 {
-width:500px;
-margin: 0 auto;
+    margin: 0 auto;
 }
-
 #form_login
 {
-width:210px;
-margin: 0 auto;
+    width:620px;
+    margin: 0 auto;
 }
-
 .submit_button
 {
-width:50px;
-margin: 0 auto;
+	width: 80px;
+	margin: 0 270px;
+	border-radius: 10px;
+	border-color: #19F96E;
+	background-color: #C7E1FC;
+	color: #0100C0;
+	font-weight: bold;
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
 }
-
 #figure
 {
-width:500px;
+    width: 600px;
 }
-
 #thanks
 {
-width:175px;
-margin: 0 auto;
-font-size:30px;
+	margin: 0 auto;
+	font-size: 50px;
+	text-align: center;
+	color: #1411EF;
 }
