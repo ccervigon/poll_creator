@@ -1,23 +1,52 @@
-<!doctype html>
-<html>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en">
 <head>
-	<title>Short survey to tune up a new Effort Estimation Model</title>
-    <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/main.css" />
-	<meta charset="utf-8">
-	<link href="main.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="robots" content="index, follow"/>
+    <link rel="stylesheet" media="all" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
+    <title>Short survey to tune up a new Effort Estimation Model</title>
 </head>
 <body>
-	<div id="banner">
-		<img id="logo" src="{{ STATIC_URL }}img/logo-libresoft.png" align="left" alt="Logo Libresoft"/>
-    	<h2>Short survey to obtain information which can help us to tune up an effort estimation model based in CVS repositories</h2>
-	</div>
-	<hr>
-    <div id="error">
-        <p>{{ error }}</p>
-    </div>
-    
-    <div id="content"> 
-        {% block content %}{% endblock %}
+    <div id="wrapper">
+        <div id="wrapper-inner">
+            <div id="header">
+                <a href="http://www.libresoft.es/">
+                    <img alt="LibreSoft Group" width="200px" src="{{ STATIC_URL }}img/logo-libresoft.png"/>
+                </a>
+                <div id="title">
+                    <h2>Short survey to obtain information which can help us to tune up an effort estimation model based in CVS repositories</h2>
+                </div>
+                <hr>
+            </div>
+            <div id="sidebar">
+                <div id="menu">
+                    <ul>
+                        <li class="libresoft"><a href="/">Home</a>
+                            <ul>
+                                <li><a href="/info">Information</a></li>
+                                <li><a href="/result">Results</a></li>
+                                <li><a href="/contact">Contact</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="contenthome">
+                {% block content %}{% endblock %}
+            </div>
+            <div id="footer">
+                <div id="notice">
+                    <p>
+                        Copyright © 2013 <a href="http://www.libresoft.es">Libresoft Research Group at Universidad Rey Juan Carlos</a>. <strong><a href="/contact">Contact us</a></strong>.<br>
+                        The design of this website is based in <a href="http://floss2013.libresoft.es/">FLOSS Survey 2013</a>.<br>
+                        Site design released under the <a href="http://www.gnu.org/licenses/agpl.html">GNU AGPLv3</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
 </html>

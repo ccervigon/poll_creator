@@ -1,10 +1,18 @@
 {% extends "base.html"%}
 {% block content %}
+<div id="introduction">
+    <p>
+        Welcome to the survey
+    </p>
+</div>
+<div id="error">
+    <p>{{ error }}</p>
+</div>
 <div id="form_login">
-<form action="/" method="post">
-    <p align="center"><label for="id_name">Name:</label> <input id="id_name" maxlength="40" name="name" type="text" /></p>
-    <p align="center"><label for="id_email">Email:</label> <input id="id_email" maxlength="40" name="email" type="text" /></p>
-    <input type="submit" value="Submit" class="submit_button" />
-</form>
+    <form action="/" method="post">
+        <p align="center"><label for="id_name">Name:</label> <input id="id_name" maxlength="40" name="name" type="text" /></p>
+        <p align="center"><label for="id_email">Email:</label> <input id="id_email" maxlength="40" name="email" type="text" /></p>
+        <input type="submit" value="Submit" class="submit_button" />
+    </form>
 </div>
 {% endblock%}

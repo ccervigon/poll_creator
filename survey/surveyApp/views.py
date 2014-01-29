@@ -39,7 +39,7 @@ def welcome(request, email_hash=None):
                 request.session['_old_post'] = request.POST
                 request.session['_param'] = 'email'
                 return HttpResponseRedirect('/survey')
-            text_error = 'Please you check your name and email because \
+            text_error = 'Please check your name and email because \
                         you don\'t appear in the author list'
 
     response = render_to_response('login.html', 
@@ -136,4 +136,16 @@ def survey2(request):
 def thanks(request):
     request.session.flush()
     return render_to_response('thanks.html',
+                              context_instance=RequestContext(request))
+
+def result(request):
+    return render_to_response('result.html',
+                              context_instance=RequestContext(request))
+
+def information(request):
+    return render_to_response('information.html',
+                              context_instance=RequestContext(request))
+
+def contact(request):
+    return render_to_response('contact.html',
                               context_instance=RequestContext(request))
