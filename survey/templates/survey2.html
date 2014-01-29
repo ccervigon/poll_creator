@@ -2,8 +2,13 @@
 {% block content %}
 <form action="/survey2" method="post">
     <p>
-        <label for="id_resp4">Answer 4:<br /></label>
-        <textarea id="id_resp4" name="resp4" rows="4" cols="60"></textarea>
+        <label for="id_resp4">What do you consider yourself in the project?<br /></label>
+        <select id="id_resp4" name="resp4">
+            <option selected value="None">Choose one option</option>
+            <option value="full">Full-time professional</option>
+            <option value="part">Part-time professional</option>
+            <option value="occasional">Occasional contributor</option>
+        </select>
     </p>
     <p>
         <label for="id_resp5">Did you always work the same hours in the project, or did you have different phases of commitment? If you had different phases, could you tell us about the various phases using the graph below?<br /></label>
