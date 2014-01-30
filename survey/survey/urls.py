@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^thanks$', 'surveyApp.views.thanks', name='thanks'),
     url(r'^result$', 'surveyApp.views.result', name='result'),
     url(r'^info$', 'surveyApp.views.information', name='information'),
+    url(r'^privacy$', 'surveyApp.views.privacy', name='privacy'),
     url(r'^contact$', 'surveyApp.views.contact', name='contact'),
     url(r'^(?P<email_hash>\w+)', 'surveyApp.views.welcome', name='welcome'),
 

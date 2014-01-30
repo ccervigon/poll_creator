@@ -147,6 +147,10 @@ def information(request):
     return render_to_response('information.html',
                               context_instance=RequestContext(request))
 
+def privacy(request):
+    return render_to_response('privacy.html',
+                              context_instance=RequestContext(request))
+
 def contact(request):
     return render_to_response('contact.html',
                               context_instance=RequestContext(request))
