@@ -51,7 +51,7 @@ template_content = '''Dear %s,<br><br>
 
 I am a researcher at a Spanish University and together with another university in the UK we are working on a model for estimating effort in Open Source Software.<br><br>
 
-To validate our findings we have built a small survey -it is composed of 6 questions and should take you less than 3 minutes to respond- about your effort and time spent on the %s project.<br><br>
+To validate our findings we need your input. Therefore we have built a small survey -it is composed of 6 questions and should take you less than 3 minutes to respond- about your effort and time spent on the %s project.<br><br>
 
 The survey can be accessed at %s/%s<br><br>
 
@@ -74,7 +74,7 @@ for developer in cursor.execute(query):
     msg['To'] = developer[1]
     msg['Subject'] = 'Short survey to tune up Effort Estimation Model for FLOSS'
     #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
-    email_content = template_content % (developer[0], args.project, args.url, developer[2], args.url)
+    email_content = template_content % (developer[0].split()[0], args.project, args.url, developer[2], args.url)
     msgText = MIMEText('<p>%s</p>' % email_content, 'html')
     msg.attach(msgText)
     mailServer.sendmail(args.email, developer[1], msg.as_string())
