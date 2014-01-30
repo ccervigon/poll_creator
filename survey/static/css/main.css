@@ -253,7 +253,7 @@ a.button {
     margin: 1em auto;
     font-size: 35px;
     text-align: center;
-    color: #1411EF;
+    color: #11EE14; /* old: #1411EF; */
 }
 
 /**
@@ -273,7 +273,7 @@ a.button {
   margin-top: 0em;
   padding-right:6em;
   width: 70%;
-  color: #1411EF;
+  color: #11EE14; /* old: #1411EF; */
   font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
   text-align: center;
   font-size: 110%;
@@ -312,7 +312,7 @@ body hr {
 #footer #notice {
   float: left;
   margin-right: 10%;
-  width: 50%;
+  width: 60%;
 }
 
 #footer #notice > p {
@@ -452,18 +452,7 @@ body hr {
   text-decoration: underline; 
 }
 
-
-/**
- * 6.TWITTER
- */
-
-#twitter {
-  margin-left: 10px;
-  clear: right;
-  float: right;
-  min-height: 400px;
-  width: 20%;
-  font-size: 90%;
-  overflow: hidden;
-}
+#images {
+   float: right;
+   width: 245px;
 }
