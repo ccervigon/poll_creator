@@ -210,6 +210,7 @@ a.button {
   padding: 1em .5em;
   width: 100%;
   margin-bottom: 2px;
+  text-align: justify;
 }
 
 #sidebar {
