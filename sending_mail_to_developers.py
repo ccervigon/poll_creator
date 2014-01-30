@@ -72,7 +72,7 @@ for developer in cursor.execute(query):
     msg = MIMEMultipart()
     msg['From'] = args.email
     msg['To'] = developer[1]
-    msg['Subject'] = 'Short survey to tune up Effort Estimation Model for FLOSS'
+    msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
     #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
     email_content = template_content % (developer[0].split()[0], args.project, args.url, developer[2], args.url)
     msgText = MIMEText('<p>%s</p>' % email_content, 'html')
