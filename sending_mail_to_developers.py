@@ -67,18 +67,21 @@ http://www.libresoft.es<br>
 
 query = ('SELECT name,email,email_hash FROM surveyApp_author')
 for developer in cursor.execute(query):
-    print 'Sending email to ' + developer[1] + '...',
-    #Message
-    msg = MIMEMultipart()
-    msg['From'] = args.email
-    msg['To'] = developer[1]
-    msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
-    #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
-    email_content = template_content % (developer[0].split()[0], args.project, args.url, developer[2], args.url)
-    msgText = MIMEText('<p>%s</p>'.encode('utf-8') % email_content, 'html', 'utf-8')
-    msg.attach(msgText)
-    mailServer.sendmail(args.email, developer[1], msg.as_string())
-    print 'OK'
+    try:
+        print 'Sending email to ' + developer[1] + '...',
+        #Message
+        msg = MIMEMultipart()
+        msg['From'] = args.email
+        msg['To'] = developer[1]
+        msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
+        #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
+        email_content = template_content % (developer[0].split()[0], args.project, args.url, developer[2], args.url)
+        msgText = MIMEText('<p>%s</p>'.encode('utf-8') % email_content, 'html', 'utf-8')
+        msg.attach(msgText)
+        mailServer.sendmail(args.email, developer[1], msg.as_string())
+        print 'OK'
+    except:
+        print 'Problem'
 
 mailServer.close()
 cursor.close()
