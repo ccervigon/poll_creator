@@ -62,7 +62,11 @@
         <input id="id_info" name="info" type="checkbox" />
     </p>
     {% endif %}
-    <input type="submit" value="Submit" class="submit_button" />
+    {% if flag_info %}
+        <input type="submit" value="Submit" class="submit_button" />
+    {% else %}
+        <input type="submit" value="Next Page (2/2)" class="submit_button" />
+    {% endif %}
 </form>
 {% if flag_fig %}
 <img src="{{ STATIC_URL }}img/{{ figure }}" id="figure" alt="Work done during the months of the project by the author" />
