@@ -49,7 +49,7 @@ mailServer.login(args.email,args.email_pw)
 #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
 template_content = '''Dear %s,<br><br>
 
-We are researchers from a Spanish and a British university working on a model for estimating effort in Open Source Software.<br><br>
+I am a researcher at a Spanish University and together with another university in the UK we are working on a model for estimating effort in Open Source Software.<br><br>
 
 To validate our findings we have built a small survey -it is composed of 6 questions and should take you less than 3 minutes to respond- about your effort and time spent on the %s project.<br><br>
 
