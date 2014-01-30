@@ -47,7 +47,7 @@ mailServer.ehlo()
 mailServer.login(args.email,args.email_pw)
 
 #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
-template_content = '''Dear %s,<br><br>
+template_content = u'''Dear %s,<br><br>
 
 I am a researcher at a Spanish University and together with another university in the UK we are working on a model for estimating effort in Open Source Software.<br><br>
 
@@ -59,7 +59,7 @@ For more information about ourselves, our research, and the possibility to give 
 
 Thank you in advance.<br><br>
 
-Carlos Cervigon<br>
+Carlos Cervigón<br>
 Researcher at Universidad Rey Juan Carlos<br>
 GSyC/LibreSoft Libre Software Engineering Research Lab<br>
 http://www.libresoft.es<br>
@@ -75,7 +75,7 @@ for developer in cursor.execute(query):
     msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
     #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
     email_content = template_content % (developer[0].split()[0], args.project, args.url, developer[2], args.url)
-    msgText = MIMEText('<p>%s</p>' % email_content, 'html')
+    msgText = MIMEText('<p>%s</p>'.encode('utf-8') % email_content, 'html', 'utf-8')
     msg.attach(msgText)
     mailServer.sendmail(args.email, developer[1], msg.as_string())
     print 'OK'
