@@ -94,6 +94,7 @@ def survey(request):
                            resp1=survey_form.resp1,
                            resp2=survey_form.resp2,
                            resp3=survey_form.resp3,
+                           resp4=survey_form.resp4,
                            resp5=survey_form.resp5,
                            info=survey_form.info,
                            type_survey=1)

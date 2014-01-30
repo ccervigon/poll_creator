@@ -30,7 +30,7 @@ class AuthorForm(ModelForm):
 class Survey1Form(ModelForm):
     class Meta:
         model = Survey_author
-        exclude = ['author', 'upeople_id', 'resp4', 'type_survey']
+        exclude = ['author', 'upeople_id', 'type_survey']
 
 class Survey2Form(ModelForm):
     class Meta:
