@@ -417,42 +417,12 @@ body hr {
   padding: .6em 0 .8em 1.6em
 }
 
-
-/**
- * 5.TRANSLATIONS
- */
-
-/* translations */
-
-#menu,
-#translations {
-  margin-bottom: 1em;
-  clear: left;
-  float: left;
-  max-width: 100%;
-}
-
-#translations {
-  padding-left: .8em;
-}
-
-#translations ul {
-  font-size: 95%;
-  padding-left: 10px;
-}
-
-#translations ul li {
-  list-style: none;
-  line-height: 120%;
-  display: inline;
-  margin-right: 5px;
-}
-
-#translations a {
-  text-decoration: underline; 
-}
-
 #images {
    float: right;
    width: 245px;
+}
+
+#content_head {
+    color: #0100C0;
+    margin-bottom: 0em;
 }
