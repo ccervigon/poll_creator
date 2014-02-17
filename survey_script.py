@@ -82,7 +82,7 @@ con2 = sqlite3.connect(survey_project + '/survey/db.sqlite3')
 con2.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor2 = con2.cursor()
 
-query = ('SELECT * FROM people WHERE id = ANY (SELECT DISTINCT author_id from scmlog)')
+query = ('SELECT * FROM people WHERE id = ANY (SELECT DISTINCT author_id FROM scmlog) AND NOT id = ANY (SELECT id FROM people WHERE name LIKE "%bot" OR name LIKE "%jenkins%" OR name LIKE "%gerrit%")')
 cursor.execute(query)
 people = cursor.fetchall()
 
