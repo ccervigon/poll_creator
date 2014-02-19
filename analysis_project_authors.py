@@ -144,26 +144,33 @@ date_max = date_max.year
 period = range(date_min,date_max)
 period.append(date_max)
 
+#Upeople
 query = ('SELECT id from upeople')
 cursor.execute(query)
 upeople = cursor.fetchall()
 
+#Bots
+query = ('SELECT upeople_id FROM people_upeople WHERE people_id = ANY (SELECT id FROM people WHERE name LIKE "%bot" OR name LIKE "%jenkins%" OR name LIKE "%gerrit%")')
+cursor.execute(query)
+bots = cursor.fetchall()
+
 authors_commits = []
 authors_ids = []
 for aut in upeople:
-    query = ('SELECT people_id FROM people_upeople WHERE upeople_id=%s')
-    cursor.execute(query, aut[0])
-    people_ids = cursor.fetchall()
-    if people_ids:
-        list_commits = ()
-        for pid in people_ids:
-            query = ('SELECT committer_id, author_id, ' + date + ' FROM scmlog '
-                     'WHERE author_id = %s')
-            cursor.execute(query, pid[0])
-            list_commits += cursor.fetchall()
-        authors_commits.append(tuple(sorted(list_commits, key=lambda item: item[2])))
-        ids = (aut,) + people_ids
-        authors_ids.append(ids)
+    if not aut in bots:
+        query = ('SELECT people_id FROM people_upeople WHERE upeople_id=%s')
+        cursor.execute(query, aut[0])
+        people_ids = cursor.fetchall()
+        if people_ids:
+            list_commits = ()
+            for pid in people_ids:
+                query = ('SELECT committer_id, author_id, ' + date + ' FROM scmlog '
+                         'WHERE author_id = %s')
+                cursor.execute(query, pid[0])
+                list_commits += cursor.fetchall()
+            authors_commits.append(tuple(sorted(list_commits, key=lambda item: item[2])))
+            ids = (aut,) + people_ids
+            authors_ids.append(ids)
 
 tot_authors = len(authors_commits)
 
