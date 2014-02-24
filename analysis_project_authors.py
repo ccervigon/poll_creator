@@ -136,13 +136,11 @@ else:
 
 cursor.execute('SELECT MIN(date) FROM scmlog')
 date_min = cursor.fetchall()[0][0]
-date_min = date_min.year
 cursor.execute('SELECT MAX(date) FROM scmlog')
 date_max = cursor.fetchall()[0][0]
-date_max = date_max.year
 
-period = range(date_min,date_max)
-period.append(date_max)
+period = range(date_min.year,date_max.year)
+period.append(date_max.year)
 
 #Upeople
 query = ('SELECT id from upeople')
@@ -179,14 +177,21 @@ work_authors_month = []
 for author in authors_commits:
     M_month = []
     for year in period:
-        for month in range(1, 13):
+        first_month = 1
+        last_month = 12
+        if year == date_min.year:
+            first_month = date_min.month
+            last_month = 12
+        elif year == date_max.year:
+            first_month = 1
+            last_month = date_max.month
+        for month in range(first_month, last_month+1):
             aut = calendar_commit_month_author(year, month, author)
             work_days = 0
             for i in range(len(aut)):
                 if aut[i] != 0:
                     work_days += 1
             M_month.append(work_days)
-            
     work_authors_month.append(M_month)
     
     windows=['hanning']
@@ -196,8 +201,8 @@ for author in authors_commits:
     for aut in work_authors_month:
         smooth_work_days_authors.append(fix_smooth(aut, len_windows[0], windows[0]))
 
-startdate = datetime.date(date_min, 1, 1)
-enddate = datetime.date(date_max, 12, 1)
+startdate = datetime.date(date_min.year, date_min.month, 1)
+enddate = datetime.date(date_max.year, date_max.month, 1)
 delta = relativedelta(months=+1)
 list_date = []
 d = startdate
