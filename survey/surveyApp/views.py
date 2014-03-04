@@ -10,20 +10,20 @@ import random
 text_error = ''
 
 @csrf_exempt
-def welcome(request, email_hash=None):
+def welcome(request, author_hash=None):
     request.session.set_expiry(0)
     if request.method == 'GET':
-        if email_hash == None:
+        if author_hash == None:
             form = AuthorForm()
             try:
-                del request.session['_email_hash']
+                del request.session['_author_hash']
             except:
                 pass
             text_error = ''
         else:
-            if not Author.objects.filter(email_hash=email_hash).exists():
+            if not Author.objects.filter(author_hash=author_hash).exists():
                 return HttpResponseRedirect('/')
-            request.session['_email_hash'] = email_hash
+            request.session['_author_hash'] = author_hash
             return HttpResponseRedirect('/survey')
     elif request.method == 'POST':
         form = AuthorForm(request.POST)
@@ -50,9 +50,9 @@ def welcome(request, email_hash=None):
 @csrf_exempt
 def survey(request):
     if request.method == 'GET':
-        email_hash = request.session.get('_email_hash', None)
-        if email_hash != None:
-            author = Author.objects.filter(email_hash=email_hash)[0]
+        author_hash = request.session.get('_author_hash', None)
+        if author_hash != None:
+            author = Author.objects.filter(author_hash=author_hash).reverse()[0]
         else:
             form = AuthorForm(request.session.get('_old_post'))
             aut_form = form.save(commit=False)
@@ -60,17 +60,17 @@ def survey(request):
             if param == 'name':
                 author = Author.objects.get(name__iexact=aut_form.name)
             elif param == 'email':
-                author = Author.objects.filter(email__iexact=aut_form.email)[0]
+                author = Author.objects.filter(email__iexact=aut_form.email).reverse()[0]
             else:
                 return HttpResponseRedirect('/')
 
-        request.session['_author'] = author.id
+        request.session['_author'] = author.author_hash
         rand = random.randint(0,1)
         if rand == 0:
             type_survey = 1
             flag_fig = True
             flag_info = True
-            figure = 'author_' + str(author.upeople_id) + '.png'
+            figure = author.fig_name + '.png'
         else:
             type_survey = 2
             flag_fig = False
@@ -87,10 +87,11 @@ def survey(request):
     elif request.method == 'POST':
         form = Survey1Form(request.POST)
         survey_form = form.save(commit=False)
-        author_id = request.session.get('_author')
-        author=Author.objects.get(id=author_id)
+        author_hash = request.session.get('_author')
+        author = Author.objects.filter(author_hash=author_hash).reverse()[0]
         survey = Survey_author(author=author,
                            upeople_id=author.upeople_id,
+                           project=author.project,
                            resp1=survey_form.resp1,
                            resp2=survey_form.resp2,
                            resp3=survey_form.resp3,
@@ -110,10 +111,11 @@ def survey2(request):
         first_post = form.save(commit=False)
         form = Survey2bForm(request.POST)
         second_post = form.save(commit=False)
-        author_id = request.session.get('_author')
-        author=Author.objects.get(id=author_id)
+        author_hash = request.session.get('_author')
+        author = Author.objects.filter(author_hash=author_hash).reverse()[0]
         survey = Survey_author(author=author,
                            upeople_id=author.upeople_id,
+                           project=author.project,
                            resp1=first_post.resp1,
                            resp2=first_post.resp2,
                            resp3=first_post.resp3,
@@ -126,9 +128,9 @@ def survey2(request):
     except:
         request.session['_first_post'] = request.POST
         request.session['_sec_post'] = True
-        author_id = request.session.get('_author')
-        author = Author.objects.get(id=author_id)
-        figure = 'author_' + str(author.upeople_id) + '.png'
+        author_hash = request.session.get('_author')
+        author = Author.objects.filter(author_hash=author_hash).reverse()[0]
+        figure = author.fig_name + '.png'
         response = render_to_response('survey2.html',
                                       {'figure': figure},
                                       context_instance=RequestContext(request))

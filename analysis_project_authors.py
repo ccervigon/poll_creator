@@ -237,7 +237,7 @@ for aut in range(tot_authors):
     ax.text(0.97, 0.96, textstr, transform = ax.transAxes, fontsize = 10, verticalalignment = 'top', horizontalalignment = 'right', bbox = props)
     plt.ylabel('Days worked')
     plt.title(unicode('Temporal figure of work done by author ' + name_author, 'iso-8859-1'))
-    plt.savefig('author_' + str(authors_ids[aut][0][0]) + '.png', dpi = 200)
+    plt.savefig(project + '_author_' + str(authors_ids[aut][0][0]) + '.png', dpi = 200)
     plt.close()
 
 cursor.close()

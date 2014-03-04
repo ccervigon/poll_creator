@@ -8,12 +8,15 @@ from django.utils.translation import gettext as _
 class Author(models.Model):
     name = models.CharField(max_length=40, blank=True)
     email = models.CharField(max_length=40, blank=True)
-    email_hash = models.TextField(blank=True)
+    author_hash = models.TextField(blank=True)
     upeople_id = models.IntegerField()
+    project = models.TextField()
+    fig_name = models.TextField()
     
 class Survey_author(models.Model):
     author = models.ForeignKey(Author)
     upeople_id = models.IntegerField()
+    project = models.TextField()
     resp1 = models.TextField(blank=True)
     resp2 = models.TextField(blank=True)
     resp3 = models.TextField(blank=True)
@@ -25,17 +28,17 @@ class Survey_author(models.Model):
 class AuthorForm(ModelForm):
     class Meta:
         model = Author
-        exclude = ['email_hash', 'upeople_id']
+        exclude = ['author_hash', 'upeople_id', 'project', 'fig_name']
 
 class Survey1Form(ModelForm):
     class Meta:
         model = Survey_author
-        exclude = ['author', 'upeople_id', 'type_survey']
+        exclude = ['author', 'upeople_id', 'project', 'type_survey']
 
 class Survey2Form(ModelForm):
     class Meta:
         model = Survey_author
-        exclude = ['author', 'upeople_id', 'resp4', 'resp5', 'info', 'type_survey']
+        exclude = ['author', 'upeople_id', 'project', 'resp4', 'resp5', 'info', 'type_survey']
 
 class Survey2bForm(ModelForm):
     class Meta:

@@ -34,6 +34,10 @@ parser.add_argument("-update_survey",
                     help="Only update survey App",
                     action='store_true',
                     default = False)
+parser.add_argument("-add_project",
+                    help="Add project to survey",
+                    action='store_true',
+                    default = False)
 
 
 args = parser.parse_args()
@@ -45,9 +49,9 @@ else:
 print 'Running script'
 
 #Creating directory where we will store and copy the survey and web
-survey_project += 'survey_' + args.dbname + '/'
+#survey_project += 'survey_' + args.dbname + '/'
 
-if not args.update_survey:
+if not args.update_survey and not args.add_project:
     if os.path.isdir(survey_project):
         print 'The directory "' + survey_project + '" exists.'
         if not args.delete:
@@ -61,10 +65,11 @@ if not args.update_survey:
     
     print 'Copying files...',
     call(['mkdir', survey_project])
-call(['cp', '-r', 'survey', survey_project])
-print 'Done'
+if not args.add_project:
+    call(['cp', '-r', 'survey', survey_project])
+    print 'Done'
 
-if not args.update_survey:
+if not args.update_survey or args.add_project:
     #Analysis of project and obtaining graphs of authors
     print 'Analyzing project and making images...'
     fig_dir = survey_project + 'survey/static/img/'
@@ -82,6 +87,10 @@ con2 = sqlite3.connect(survey_project + '/survey/db.sqlite3')
 con2.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor2 = con2.cursor()
 
+query = ('SELECT COUNT(*) from surveyApp_author')
+tot_aut = cursor2.execute(query).fetchall()[0][0]
+
+
 query = ('SELECT * FROM people WHERE id = ANY (SELECT DISTINCT author_id FROM scmlog) AND NOT id = ANY (SELECT id FROM people WHERE name LIKE "%bot" OR name LIKE "%jenkins%" OR name LIKE "%gerrit%")')
 cursor.execute(query)
 people = cursor.fetchall()
@@ -91,9 +100,10 @@ for author in people:
     cursor.execute(query, author[0])
     upeople_id = cursor.fetchall()[0][0]
     sha = hashlib.sha1()
-    sha.update(author[2])
-    query = ('INSERT INTO surveyApp_author VALUES(?,?,?,?,?)')
-    cursor2.execute(query, (str(author[0]), author[1], author[2], sha.hexdigest(), str(upeople_id)))
+    sha.update((args.dbname + author[2]))
+    query = ('INSERT INTO surveyApp_author VALUES(?,?,?,?,?,?,?)')
+    cursor2.execute(query, (str(tot_aut + 1), author[1], author[2], sha.hexdigest(), str(upeople_id), args.dbname, (args.dbname+'_author_'+str(upeople_id))))
+    tot_aut += 1
 
 #Saving changes into DB
 con2.commit()
