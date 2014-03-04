@@ -35,7 +35,7 @@ parser.add_argument("-update_survey",
                     action='store_true',
                     default = False)
 parser.add_argument("-add_project",
-                    help="Add project to survey",
+                    help="Add project to the survey",
                     action='store_true',
                     default = False)
 
