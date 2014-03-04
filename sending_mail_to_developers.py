@@ -25,7 +25,10 @@ parser.add_argument("-smtp_port",
 parser.add_argument("-survey_dir",
                     help="Survey directory",
                     required = True)
-parser.add_argument("-project",
+parser.add_argument("-project_db",
+                    help="Project db",
+                    required = True)
+parser.add_argument("-project_name",
                     help="Project name",
                     required = True)
 parser.add_argument("-url",
@@ -34,7 +37,7 @@ parser.add_argument("-url",
 
 args = parser.parse_args()
 
-print 'Project: ' + args.project
+print 'Project: ' + args.project_name
 con = sqlite3.connect(args.survey_dir + '/survey/db.sqlite3')
 con.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor = con.cursor()
@@ -65,7 +68,8 @@ GSyC/LibreSoft Libre Software Engineering Research Lab<br>
 http://www.libresoft.es<br>
 '''
 
-query = ('SELECT name,email,email_hash FROM surveyApp_author')
+query = ('SELECT name,email,author_hash FROM surveyApp_author WHERE project="%s"' % args.project_db)
+
 for developer in cursor.execute(query):
     try:
         print 'Sending email to ' + developer[1] + '...',
@@ -75,7 +79,7 @@ for developer in cursor.execute(query):
         msg['To'] = developer[1]
         msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
         #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
-        email_content = template_content % (developer[0].split()[0], args.project, args.url, developer[2], args.url)
+        email_content = template_content % (developer[0].split()[0], args.project_name, args.url, developer[2], args.url)
         msgText = MIMEText('<p>%s</p>'.encode('utf-8') % email_content, 'html', 'utf-8')
         msg.attach(msgText)
         mailServer.sendmail(args.email, developer[1], msg.as_string())
