@@ -1,5 +1,10 @@
 {% extends "base.html"%}
 {% block content %}
+<div id="introduction">
+    <p>
+        Project: {{ project }}
+    </p>
+</div>
 {% if survey == 1 %}
 <form action="/survey" method="post">
 {% else %}

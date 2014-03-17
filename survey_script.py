@@ -25,7 +25,7 @@ parser.add_argument("-dbname",
                     required = True)
 parser.add_argument("-survey_dir",
                     help="Survey directory",
-                    default = '/tmp')
+                    default = '/tmp/survey')
 parser.add_argument("-delete",
                     help="Delete automatically the directory if exist",
                     action='store_true',

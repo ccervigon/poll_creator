@@ -76,12 +76,14 @@ def survey(request):
             flag_fig = False
             flag_info = False
             figure = ''
-        
+        project = author.project
+        project = project[:project.rfind('_')]
         response = render_to_response('survey.html',
                                       {'survey': type_survey,
                                        'flag_fig': flag_fig,
                                        'flag_info': flag_info,
-                                       'figure': figure},
+                                       'figure': figure,
+                                       'project': project},
                                        context_instance=RequestContext(request))
         return response
     elif request.method == 'POST':
@@ -131,8 +133,11 @@ def survey2(request):
         author_hash = request.session.get('_author')
         author = Author.objects.filter(author_hash=author_hash).reverse()[0]
         figure = author.fig_name + '.png'
+        project = author.project
+        project = project[:project.rfind('_')]
         response = render_to_response('survey2.html',
-                                      {'figure': figure},
+                                      {'figure': figure,
+                                       'project': project},
                                       context_instance=RequestContext(request))
         return response
 
