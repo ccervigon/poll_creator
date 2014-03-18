@@ -143,8 +143,9 @@ period = range(date_min.year,date_max.year)
 period.append(date_max.year)
 
 #Upeople
-query = ('SELECT id from upeople')
-cursor.execute(query)
+date_limit = datetime.datetime(date_max.year-1, date_max.month, 1)
+query = ('SELECT upeople_id FROM people_upeople WHERE people_id = ANY (SELECT DISTINCT author_id FROM scmlog WHERE date >= %s)')
+cursor.execute(query, date_limit)
 upeople = cursor.fetchall()
 
 #Bots
@@ -152,9 +153,13 @@ query = ('SELECT upeople_id FROM people_upeople WHERE people_id = ANY (SELECT id
 cursor.execute(query)
 bots = cursor.fetchall()
 
+print 'Getting activity'
 authors_commits = []
 authors_ids = []
+aut_num = 0
+len_aut = len(upeople)
 for aut in upeople:
+    print aut_num, len_aut
     if not aut in bots:
         query = ('SELECT people_id FROM people_upeople WHERE upeople_id=%s')
         cursor.execute(query, aut[0])
@@ -169,12 +174,16 @@ for aut in upeople:
             authors_commits.append(tuple(sorted(list_commits, key=lambda item: item[2])))
             ids = (aut,) + people_ids
             authors_ids.append(ids)
+    aut_num+=1
 
 tot_authors = len(authors_commits)
 
 work_authors_month = []
 
+print 'Getting activity'
+count_aut = 0
 for author in authors_commits:
+    print count_aut, tot_authors
     M_month = []
     for year in period:
         first_month = 1
@@ -193,6 +202,7 @@ for author in authors_commits:
                     work_days += 1
             M_month.append(work_days)
     work_authors_month.append(M_month)
+    count_aut+=1
     
     windows=['hanning']
     len_windows = [7]
@@ -215,7 +225,10 @@ monthsFmt = mdates.DateFormatter("%b '%y")
 width_bar = [(np.array(list_date)[j+1]-np.array(list_date)[j]).days \
              for j in range(len(np.array(list_date))-1)] + [30]
 
+print 'Making graph'
+aut_num = 0
 for aut in range(tot_authors):
+    print aut_num, tot_authors
     query = ('SELECT identifier FROM upeople WHERE id=' + str(authors_ids[aut][0][0]))
     cursor.execute(query)
     name_author = cursor.fetchall()[0][0]
@@ -239,6 +252,7 @@ for aut in range(tot_authors):
     plt.title(unicode('Temporal figure of work done by author ' + name_author, 'iso-8859-1'))
     plt.savefig(project + '_author_' + str(authors_ids[aut][0][0]) + '.png', dpi = 200)
     plt.close()
+    aut_num+=1
 
 cursor.close()
 con.close()

@@ -8,6 +8,7 @@ from subprocess import call
 import sys
 import os
 import hashlib
+import datetime
 
 # Parse command line options
 parser = argparse.ArgumentParser(description="""Scripts to make a survey of specific project""")
@@ -90,9 +91,12 @@ cursor2 = con2.cursor()
 query = ('SELECT COUNT(*) from surveyApp_author')
 tot_aut = cursor2.execute(query).fetchall()[0][0]
 
-
-query = ('SELECT * FROM people WHERE id = ANY (SELECT DISTINCT author_id FROM scmlog) AND NOT id = ANY (SELECT id FROM people WHERE name LIKE "%bot" OR name LIKE "%jenkins%" OR name LIKE "%gerrit%")')
-cursor.execute(query)
+cursor.execute('SELECT MAX(date) FROM scmlog')
+date_max = cursor.fetchall()[0][0]
+date_limit = datetime.datetime(date_max.year-1, date_max.month, 1)
+query = ('SELECT * FROM people WHERE id = ANY (SELECT DISTINCT author_id FROM scmlog WHERE date >= %s) \
+        AND NOT id = ANY (SELECT id FROM people WHERE name LIKE "%%bot" OR name LIKE "%%jenkins%%" OR name LIKE "%%gerrit%%")')
+cursor.execute(query, date_limit)
 people = cursor.fetchall()
 
 for author in people:
