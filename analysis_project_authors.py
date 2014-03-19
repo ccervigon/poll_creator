@@ -79,7 +79,7 @@ def fix_smooth(f_original, len_window, window):
     f_smooth = np.array([], dtype=np.int)
     flag = False
     position = 0
-    for i in range(0, len(f_original)):
+    for i in range(len(f_original)):
         if f_original[i] != 0:
             if i+1 == len(f_original):
                 if flag:
@@ -106,8 +106,8 @@ def fix_smooth(f_original, len_window, window):
                 flag = False
             elif f_original[i+1] == 0:
                 if len(f_original[position:i]) == 7:
-                    smooth_aux = smooth(np.array(f_original[position-1:i]), len_window, window)
-                    smooth_aux = smooth_aux[1:]
+                    smooth_aux = smooth(np.array(f_original[position:i+1]), len_window, window)
+                    smooth_aux = smooth_aux[:-1]
                 else:
                     smooth_aux = smooth(np.array(f_original[position:i]), len_window, window)
                 f_smooth = np.append(f_smooth, smooth_aux)
@@ -156,10 +156,10 @@ bots = cursor.fetchall()
 print 'Getting activity'
 authors_commits = []
 authors_ids = []
-aut_num = 0
+count_aut = 1
 len_aut = len(upeople)
 for aut in upeople:
-    print aut_num, len_aut
+    print count_aut, len_aut
     if not aut in bots:
         query = ('SELECT people_id FROM people_upeople WHERE upeople_id=%s')
         cursor.execute(query, aut[0])
@@ -174,14 +174,14 @@ for aut in upeople:
             authors_commits.append(tuple(sorted(list_commits, key=lambda item: item[2])))
             ids = (aut,) + people_ids
             authors_ids.append(ids)
-    aut_num+=1
+    count_aut+=1
 
 tot_authors = len(authors_commits)
 
 work_authors_month = []
 
 print 'Getting activity'
-count_aut = 0
+count_aut = 1
 for author in authors_commits:
     print count_aut, tot_authors
     M_month = []
@@ -204,12 +204,16 @@ for author in authors_commits:
     work_authors_month.append(M_month)
     count_aut+=1
     
-    windows=['hanning']
-    len_windows = [7]
-    
-    smooth_work_days_authors = []
-    for aut in work_authors_month:
-        smooth_work_days_authors.append(fix_smooth(aut, len_windows[0], windows[0]))
+windows=['hanning']
+len_windows = [7]
+
+smooth_work_days_authors = []
+print 'Processing activity...'
+count_aut = 1
+for aut in work_authors_month:
+    print count_aut, tot_authors
+    smooth_work_days_authors.append(fix_smooth(aut, len_windows[0], windows[0]))
+    count_aut+=1
 
 startdate = datetime.date(date_min.year, date_min.month, 1)
 enddate = datetime.date(date_max.year, date_max.month, 1)
@@ -226,9 +230,9 @@ width_bar = [(np.array(list_date)[j+1]-np.array(list_date)[j]).days \
              for j in range(len(np.array(list_date))-1)] + [30]
 
 print 'Making graph'
-aut_num = 0
+count_aut = 1
 for aut in range(tot_authors):
-    print aut_num, tot_authors
+    print count_aut, tot_authors
     query = ('SELECT identifier FROM upeople WHERE id=' + str(authors_ids[aut][0][0]))
     cursor.execute(query)
     name_author = cursor.fetchall()[0][0]
@@ -252,7 +256,7 @@ for aut in range(tot_authors):
     plt.title(unicode('Temporal figure of work done by author ' + name_author, 'iso-8859-1'))
     plt.savefig(project + '_author_' + str(authors_ids[aut][0][0]) + '.png', dpi = 200)
     plt.close()
-    aut_num+=1
+    count_aut+=1
 
 cursor.close()
 con.close()
