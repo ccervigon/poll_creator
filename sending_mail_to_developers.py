@@ -53,6 +53,8 @@ The survey can be accessed at %s/%s<br><br>
 
 For more information about ourselves, our research, and the possibility to give more feedback, please visit %s/contact or find us on the IRC (#libresoft on Freenode).<br><br>
 
+We have already studied OpenStack with our methodology. Have a look at the <a href="%s/result">preliminary results</a>.
+
 Thank you in advance.<br><br>
 
 Carlos Cervigón<br>
@@ -63,7 +65,7 @@ http://www.libresoft.es<br>
 
 list_email_errors = []
 
-query = ('SELECT name,email,author_hash,project FROM surveyApp_author')
+query = ('SELECT name,email,author_hash,project FROM surveyApp_author GROUP BY email')
 
 for developer in cursor.execute(query):
     project = developer[3][:developer[3].rfind('_')]
@@ -74,8 +76,8 @@ for developer in cursor.execute(query):
         msg['From'] = args.email
         msg['To'] = developer[1]
         msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
-        #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
-        email_content = template_content % (developer[0].split()[0], project, args.url, developer[2], args.url)
+        #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL 6º URL
+        email_content = template_content % (developer[0].split()[0], project, args.url, developer[2], args.url, args.url)
         msgText = MIMEText('<p>%s</p>'.encode('utf-8') % email_content, 'html', 'utf-8')
         msg.attach(msgText)
         mailServer.sendmail(args.email, developer[1], msg.as_string())
