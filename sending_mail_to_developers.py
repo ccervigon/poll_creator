@@ -31,6 +31,9 @@ parser.add_argument("-url",
 
 args = parser.parse_args()
 
+if not (args.url[:7] == 'http://' or args.url[:8] == 'https://'):
+    args.url = 'http://' + args.url
+
 con = sqlite3.connect(args.survey_dir + '/survey/db.sqlite3')
 con.text_factory = lambda x: unicode(x, "utf-8", "ignore")
 cursor = con.cursor()
@@ -43,24 +46,32 @@ mailServer.ehlo()
 mailServer.login(args.email,args.email_pw)
 
 #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL
-template_content = u'''Dear %s,<br><br>
+template_content = u'''Dear %s,
 
-I am a researcher at a Spanish University and together with another university in the UK we are working on a model for estimating effort in Open Source Software.<br><br>
+I am a researcher at a Spanish University and together with another university
+in the UK we are working on a model for estimating effort in Open Source Software.
 
-To validate our findings we need your input. Therefore we have built a small survey -it is composed of 6 questions and should take you less than 3 minutes to respond- about your effort and time spent on the %s project.<br><br>
+To validate our findings we need your input. 
+Therefore we have built a small survey -it is composed of 6 questions and should
+take you less than 3 minutes to respond- about your effort and time spent on the
+%s project.
 
-The survey can be accessed at %s/%s<br><br>
+The survey can be accessed at %s/%s
 
-For more information about ourselves, our research, and the possibility to give more feedback, please visit %s/contact or find us on the IRC (#libresoft on Freenode).<br><br>
+For more information about ourselves, our research, and the possibility to give
+more feedback, please visit %s/contact or find us on the IRC (#libresoft on 
+Freenode).
 
-We have already studied OpenStack with our methodology. Have a look at the <a href="%s/result">preliminary results</a>.
+We have already studied OpenStack with our methodology.
+Have a look at the preliminary results in %s/result.
 
-Thank you in advance.<br><br>
+Thank you in advance.
 
-Carlos Cervigón<br>
-Researcher at Universidad Rey Juan Carlos<br>
-GSyC/LibreSoft Libre Software Engineering Research Lab<br>
-http://www.libresoft.es<br>
+
+Carlos Cervigón
+Researcher at Universidad Rey Juan Carlos
+GSyC/LibreSoft Libre Software Engineering Research Lab
+http://www.libresoft.es
 '''
 
 list_email_errors = []
@@ -78,7 +89,7 @@ for developer in cursor.execute(query):
         msg['Subject'] = 'Short survey to tune up Effort Estimation Model for Open Source Software'
         #INFO: 1º NAME, 2º PROJECT, 3º URL, 4º EMAIL_HASH, 5º URL 6º URL
         email_content = template_content % (developer[0].split()[0], project, args.url, developer[2], args.url, args.url)
-        msgText = MIMEText('<p>%s</p>'.encode('utf-8') % email_content, 'html', 'utf-8')
+        msgText = MIMEText('%s'.encode('utf-8') % email_content, 'plain', 'utf-8')
         msg.attach(msgText)
         mailServer.sendmail(args.email, developer[1], msg.as_string())
         print 'OK'
@@ -90,7 +101,7 @@ mailServer.close()
 cursor.close()
 con.close()
 
-with open("~/list_email_errors.csv", "wb") as f:
+with open("list_email_errors.csv", "wb") as f:
     writer = csv.writer(f)
     writer.writerow(['name', 'email', 'author_hash', 'project'])
     writer.writerows(list_email_errors)
