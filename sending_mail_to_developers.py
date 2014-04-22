@@ -49,7 +49,8 @@ mailServer.login(args.email,args.email_pw)
 template_content = u'''Dear %s,
 
 I am a researcher at a Spanish University and together with another university
-in the UK we are working on a model for estimating effort in Open Source Software.
+in the UK we are working on a model for estimating effort in Open Source 
+Software.
 
 To validate our findings we need your input. 
 Therefore we have built a small survey -it is composed of 6 questions and should
@@ -59,8 +60,8 @@ take you less than 3 minutes to respond- about your effort and time spent on the
 The survey can be accessed at %s/%s
 
 For more information about ourselves, our research, and the possibility to give
-more feedback, please visit %s/contact or find us on the IRC (#libresoft on 
-Freenode).
+more feedback, please visit %s/contact or find us
+on the IRC (#libresoft on Freenode).
 
 We have already studied OpenStack with our methodology.
 Have a look at the preliminary results in %s/result.
